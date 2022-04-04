@@ -14,7 +14,7 @@ Posisi awal 15-puzzle dibangkitkan secara acak oleh program dan/atau dimasukkan 
 Pada directory src jalankan `javac Main.java Matriks.java -d ../bin`
  
 ## Cara Menggunakan Program
-1. Pada directory src jalankan `java Main`
+1. Pada directory bin jalankan `java Main`
 2. Pilih posisi awal puzzle secara acak atau dari file teks
 3. Jika memilih file teks masukan nama file yang ada dalam directory test
 4. Program akan menampilkan puzzle awal
