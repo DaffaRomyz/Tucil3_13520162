@@ -156,6 +156,7 @@ class Matriks {
     }
 
     // menentukan apakah puzzle dapt diselesaikan dengan fungsi sigma(i=1,16) kurang(i) + X
+    // fungsi kurang() untuk ubin kosong juga ikut dihitung
     public Boolean reachableGoal() {
         int kurang = 0;
         for (int i = 0; i < 4; i++) {
@@ -164,7 +165,7 @@ class Matriks {
             }
         }
         int[] point = this.findBlank();
-        if (point[0] + point[1] % 2 == 1) {
+        if ((point[0] + point[1]) % 2 == 1) {
             kurang++;
         }
         System.out.printf("Total Fungsi Kurang adalah %d\n", kurang);
@@ -188,6 +189,8 @@ class Matriks {
         }
         if (this.m[x][y] != 16) {
             System.out.printf("Kurang(%d) = %d\n", this.m[x][y], kurang);
+        } else {
+            System.out.printf("Kurang() ubin kosong = %d\n", kurang);
         }
         return kurang;
     }
