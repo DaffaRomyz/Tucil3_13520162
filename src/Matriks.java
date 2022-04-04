@@ -3,12 +3,19 @@ import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 
 class Matriks {
-    private int m[][];
+    private int m[][]; // status puzzle
+    private String prev; // aksi sebelumnya
+    private int c; // cost
+    private Matriks parent; // simpul parent
 
+    // contructor untuk puzzle acak
     public Matriks() {
         this.m = new int[4][4];
+        this.prev = "none";
+        this.parent = null;
         ArrayList<Integer> a = new ArrayList<Integer>();
         for (int i = 0; i <16 ; i++) {
             a.add(i+1);
@@ -27,11 +34,15 @@ class Matriks {
                 }
             }
         }
+        this.c = this.g() + this.f();
     }
 
+    // constructor untuk puzzle dari file teks
     public Matriks(String filename) {
         try {
             this.m = new int[4][4];
+            this.prev = "none";
+            this.parent = null;
             String F = ("..\\test\\" + filename);
             File file = new File(F);
             Scanner scan = new Scanner(file);
@@ -50,47 +61,63 @@ class Matriks {
                 }
             }
             scan.close();
+            this.c = this.g() + this.f();
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
     }
 
+    // copy constructor
     public Matriks(Matriks M) {
         this.m = new int[4][4];
+        this.prev = "none";
+        this.parent = M.parent;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 this.m[i][j] = M.m[i][j];
             }
         }
+        this.c = this.g() + this.f();;
     }
 
+    // membangkitkan simpul baru dengan aksi atas, kanan, bawah, kiri
     public Matriks Move(String dir) {
         Matriks Mat = new Matriks(this);
+        Mat.parent = this;
         int[] point = Mat.findBlank();
-        if (dir.equals("up") && point[0] != 0) {
+        if (dir.equals("up") && point[0] != 0 && Mat.prev != "up") {
             Mat.m[point[0]][point[1]] = Mat.m[point[0] - 1][point[1]];
             Mat.m[point[0] - 1][point[1]] = 16;
+            Mat.prev = "up";
+            Mat.c = Mat.g() + Mat.f();
             return Mat;
         }
-        else if (dir.equals("right") && point[1] != 3) {
+        else if (dir.equals("right") && point[1] != 3 && Mat.prev != "right") {
             Mat.m[point[0]][point[1]] = Mat.m[point[0]][point[1] + 1];
             Mat.m[point[0]][point[1] + 1] = 16;
+            Mat.prev = "right";
+            Mat.c = Mat.g() + Mat.f();
             return Mat;
         }
-        else if (dir.equals("down") && point[0]!= 3) {
+        else if (dir.equals("down") && point[0]!= 3 && Mat.prev != "down") {
             Mat.m[point[0]][point[1]] = Mat.m[point[0] + 1][point[1]];
             Mat.m[point[0] + 1][point[1]] = 16;
+            Mat.prev = "down";
+            Mat.c = Mat.g() + Mat.f();
             return Mat;
         }
-        else if (dir.equals("left") && point[1] != 0) {
+        else if (dir.equals("left") && point[1] != 0 && Mat.prev != "left") {
             Mat.m[point[0]][point[1]] = Mat.m[point[0]][point[1] - 1];
             Mat.m[point[0]][point[1] - 1] = 16;
+            Mat.prev = "left";
+            Mat.c = Mat.g() + Mat.f();
             return Mat;
         } else {
-            return Mat;
+            return null;
         }
     }
 
+    // mencari posisi ubin kosong
     public int[] findBlank() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -105,6 +132,7 @@ class Matriks {
         return null;
     }
 
+    // menampilkan matriks puzzle
     public void printMatriks() {
         for (int i = 0; i < 4; i++) {
             System.out.printf("%n-----------------%n");
@@ -127,6 +155,7 @@ class Matriks {
         
     }
 
+    // menentukan apakah puzzle dapt diselesaikan dengan fungsi sigma(i=1,16) kurang(i) + X
     public Boolean reachableGoal() {
         int kurang = 0;
         for (int i = 0; i < 4; i++) {
@@ -138,10 +167,11 @@ class Matriks {
         if (point[0] + point[1] % 2 == 1) {
             kurang++;
         }
-        System.out.printf("%d%n", kurang);
+        System.out.printf("Total Fungsi Kurang adalah %d\n", kurang);
         return kurang % 2 == 0;
     }
 
+    // fungsi kurang()
     public int kurang(int x, int y) {
         int kurang = 0;
         for (int i = y; i < 4; i++) {
@@ -156,9 +186,13 @@ class Matriks {
                 }
             }
         }
+        if (this.m[x][y] != 16) {
+            System.out.printf("Kurang(%d) = %d\n", this.m[x][y], kurang);
+        }
         return kurang;
     }
     
+    // jumlah ubin tidak kosong yang tidak terdapat pada susunan akhir
     public int g() {
         int g = 0;
         int e = 1;
@@ -171,5 +205,40 @@ class Matriks {
             }
         }
         return g;
+    }
+
+    // jarak simpul ini ke simpul awal
+    public int f() {
+        int f = 0;
+        Matriks N = this.getParent();
+        while (!Objects.isNull(N)) {
+            f++;
+            N = N.getParent();
+        }
+        return f;
+    }
+
+    // menentukan apakah puzzle telah mencapai status akhir
+    public Boolean goalState() {
+        int e = 1;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (this.m[i][j] != e) {
+                    return false;
+                }
+                e++;
+            }
+        }
+        return true;
+    }
+
+    // getter simpul parent
+    public Matriks getParent() {
+        return this.parent;
+    }
+
+    // getter cost
+    public int getC() {
+        return this.c;
     }
 }
