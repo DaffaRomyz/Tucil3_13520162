@@ -38,13 +38,11 @@ class Matriks {
     }
 
     // constructor untuk puzzle dari file teks
-    public Matriks(String filename) {
+    public Matriks(File file) {
         try {
             this.m = new int[4][4];
             this.prev = "none";
             this.parent = null;
-            String F = ("..\\test\\" + filename);
-            File file = new File(F);
             Scanner scan = new Scanner(file);
             int i = 0;
             int j = 0;

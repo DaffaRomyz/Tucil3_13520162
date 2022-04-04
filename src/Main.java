@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.*;
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,7 +27,17 @@ public class Main {
                 System.out.println("Masukan Nama File:");
                 System.out.print(">>> ");
                 String filename = scaninput.next();
-                R = new Matriks(filename); 
+                String F = ("..\\test\\" + filename);
+                File file = new File(F);
+                while (!file.exists()) {
+                    System.out.println("File tidak ada. Ulangi !");
+                    System.out.println("Masukan Nama File:");
+                    System.out.print(">>> ");
+                    filename = scaninput.next();
+                    F = ("..\\test\\" + filename);
+                    file = new File(F);
+                }
+                R = new Matriks(file); 
                 input = true;
             }
             else {
