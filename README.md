@@ -5,7 +5,7 @@ Tugas Kecil 3 IF2211 Strategi Algoritma Semester II 2021/2022 Penyelesaian Perso
 Program akan menyelesaikan persoalan 15-Puzzle dengan menggunakan Algoritma Branch and Bound.
 Nilai bound tiap simpul adalah penjumlahan cost yang diperlukan untuk sampai suatu simpul x dari akar, dengan taksiran cost simpul x untuk sampai ke goal.
 Taksiran cost yang digunakan adalah jumlah ubin tidak kosong yang tidak berada pada tempat sesuai susunan akhir (goal state).
-Posisi awal 15-puzsle dibangkitkan secara acak oleh program dan/atau dimasukkan dari file teks.
+Posisi awal 15-puzzle dibangkitkan secara acak oleh program dan/atau dimasukkan dari file teks.
 
 ## Requirement
 * java
